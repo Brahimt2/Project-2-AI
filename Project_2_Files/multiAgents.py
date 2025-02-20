@@ -78,12 +78,12 @@ class ReflexAgent(Agent):
         # Distance to closest food
         foodList = newFood.asList()
         if not foodList:
-            return 999  # If no food is left, that's the best state
+            return float('inf')  # If no food is left, that's the best state
         closestFoodDistance = min([manhattanDistance(newPos, food) for food in foodList])
 
         # Ghost distances
         ghostDistances = [manhattanDistance(newPos, ghostState.getPosition()) for ghostState in newGhostStates]
-        closestGhostDistance = min(ghostDistances) if ghostDistances else 999
+        closestGhostDistance = min(ghostDistances) if ghostDistances else float('inf')
 
         score = successorGameState.getScore()
 
@@ -191,7 +191,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
         def max_value(agentIndex, depth, state):
             # initialize best score
-            best_score = -999
+            best_score = float('-inf')
             best_action = None
             for action in state.getLegalActions(agentIndex):
                 successor = state.generateSuccessor(agentIndex, action)
@@ -204,7 +204,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
         def min_value(agentIndex, depth, state):
             # want to min so high intiial score
-            best_score = 999
+            best_score = float('inf')
             nextAgent = agentIndex + 1
             # If the next agent exceeds total agents, reset to Pacman and increase depth
             if nextAgent == state.getNumAgents():
@@ -232,8 +232,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         # want to max and min respectively, so set alpha and beta to low and high
-        alpha = -999
-        beta = 999
+        alpha = float('-inf')
+        beta = float('inf')
         best_action = None
 
         # Iterate over all legal moves for Pacman (agent index 0)
@@ -253,7 +253,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         if depth == self.depth or gameState.isWin() or gameState.isLose():
             return self.evaluationFunction(gameState)
 
-        v = -999
+        v = float('-inf')
         for action in gameState.getLegalActions(0):  # Pacman moves
             successor = gameState.generateSuccessor(0, action)
             v = max(v, self.min_value(successor, 1, depth, alpha, beta))
@@ -270,7 +270,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         if gameState.isWin() or gameState.isLose():
             return self.evaluationFunction(gameState)
 
-        v = 999
+        v = float('inf')
         num_agents = gameState.getNumAgents()
 
         for action in gameState.getLegalActions(agentIndex):  # Ghost moves
@@ -318,7 +318,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
         # Handles Pacman's turn (maximizing player)
         def max_value(agentIndex, depth, state):
-            bestScore = -999
+            bestScore = float('-inf')
             bestAction = None
             for action in state.getLegalActions(agentIndex):
                 successor = state.generateSuccessor(agentIndex, action)
