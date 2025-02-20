@@ -1,51 +1,34 @@
 Please Enter your team's full names and your answers to the questions marked by QS questions here!
 
-Q1.1 (Kevin Nguyen & Ibrahim Mohammad): 
+Team Names: Kevin Nguyen, Ibrahim Mohammad
 
-The ReflexAgent evaluates each possible action by generating the successor state and assigning a score based on an evaluation function. 
-We improved it by enhancing the evaluation function to prioritize eating food (rewarding food consumption), minimizing distance to the nearest food, 
-avoiding ghosts (penalizing proximity unless they are scared), and encouraging movement (penalizing stopping). Additionally, we added stronger 
-rewards for chasing scared ghosts and adjusted penalties for risky moves near active ghosts.
+QS1.1: explain the implementation of ReflexAgent  in multiAgents.py and how you improved it.
+- We tracked distance to the food as well as distance to the ghosts, and iterated a score by rewarding if we were close to food, and by
+penalizing if we were close to ghosts. Additionally, we needed to reward chasing ghosts when they were scared, so we added a condition for that.
+We also penalized stopping so the player would stay in motion.
 
-Q1.2 (Kevin Nguyen & Ibrahim Mohammad): 
+QS1.2: What is your value function and why do you think this estimation makes sense?
+- Our value function rewards states that are closer to food, farther from non-scared ghosts, have less food remaining on the board, and penalizes
+stopping. This makes sense because tracking ghost distances keeps pacman alive and tracking food ensures he finishes the game.
 
-The value function rewards states with fewer remaining food pellets, closer proximity to food, 
-and greater distance from active ghosts. It penalizes stopping and being near active ghosts while providing bonuses for eating 
-food and chasing scared ghosts. This estimation makes sense because it encourages Pacman to clear the board while also staying 
-safe from ghosts, quickly consuming food, and leveraging power pellets for ghost hunting.
+QS2.1: Explain your algorithm. Why do you think it is working?
+- Our minimax algorithm recursively calls itself by first checking for the max value of a turn (pacmans turn) then checking for the min value(ghosts).
+We continue to recursively call until we reach our specified depth, or we reach a terminal state. This works because we explore all outcomes and 
+can find the best path for pacman.
 
-Q2.1 (Kevin Nguyen & Ibrahim Mohammad):
+QS 3.1: The AlphaBetaAgent minimax values should be identical to the MinimaxAgent minimax values.  Explain why.
+- The logic for both algorithms is the same, the only difference is alpha-beta looks to prune trees that are unnecessary to traveres. 
 
-The MinimaxAgent algorithm works by recursively exploring the game tree; it alternates between Pacman’s maximizing moves and the ghosts’ 
-minimizing moves. Pacman chooses actions that maximize the minimum expected outcome (worst-case scenario), while each ghost tries to minimize 
-Pacman’s score. The algorithm evaluates terminal states (win/lose) or when the specified depth is reached (via self.evaluationFunction). The 
-depth increases after all agents have made a move (one ply). The agent works because it systematically explores all possible future 
-outcomes, applying the minimax principle and respecting depth control.
+QS 3.2: explain your strategy for breaking a tie.
+- If we encounter 2 moves that have equally high scores, our algorithm picks the first one. This is natural because when we loop through the 
+getLegalActions(), we do not update bestAction unless it is a higher value. Since they are equal, the first one found doesn't get updated and 
+that is what we use.
 
-Q3.1 (Kevin Nguyen & Ibrahim Mohammad):
+QS 4.1: Explain your Expectimax algorithm
+- Instead of expecting our opponent to play perfectly like we do in minimax, we expect an average case outcome. This means that we combine the 
+scores of all moves that they can make, and average it, allowing us to not play only based on the worst-case. 
 
-The AlphaBetaAgent’s minimax values are identical to the MinimaxAgent’s minimax values because alpha-beta pruning does not change the order in 
-which values are computed; it only eliminates branches that cannot affect the final decision (e.g. alpha-beta pruning improves 
-efficiency by skipping unnecessary computations while still exploring all paths that contribute to the optimal minimax value). The core 
-minimax logic remains intact which ensures that the returned minimax values are the same as the ones computed by the standard MinimaxAgent.
-
-Q3.2 (Kevin Nguyen & Ibrahim Mohammad):
-
-The tie-breaking strategy implemented selects the first action among those with the highest evaluated score. This approach occurs naturally 
-because the agent iterates through getLegalActions() in the order provided by the environment and updates the best action only when a strictly 
-better value is found. In the case of equal values,  it makes sure that the first encountered optimal action is chosen without additional 
-tie-breaking logic.
-
-Q4.1 (Kevin Nguyen & Ibrahim Mohammad):
-
-The Expectimax algorithm models the ghosts’ behavior using probability (in contrast of assuming optimal adversarial behavior like Minimax). For 
-Pacman’s turn (max node), the algorithm selects the action that maximizes the expected score. For the ghosts’ turn (chance node), it calculates 
-the expected value by averaging the outcomes of all legal actions (assuming that the ghosts choose each action uniformly at random). This allows Pacman 
-to take calculated risks based on potential rewards rather than worst-case outcomes.
-
-Q5.1 (Kevin Nguyen & Ibrahim Mohammad):
-
-The new evaluation function rewards Pacman for being closer to food and capsules. This is optimal because it also handles ghost interactions by penalizing 
-proximity to active ghosts while rewarding chasing scared ghosts; it accounts for the number of remaining food pellets and capsules which discourages wandering 
-around (winning states get a large bonus; losing states get a heavy penalty) Compared to the previous evaluation, this function prioritizes safe yet aggressive 
-gameplay which will result in higher average scores with faster completion times.
+QS 5.1: explain your new evaluation function, why do you think this new evaluation function is better compared to the previous one?
+- Our new function is more aggressive and we have added a few new parameters: capsules, winning states, and losing states. We still do the 
+previous rewards for food and staying away from ghosts, but we now reward for getting capsules and chasing scared ghosts. We also 
+give huge bonuses if we reach a win state which makes the algorithm prefer that.
